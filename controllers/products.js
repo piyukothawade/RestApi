@@ -4,7 +4,6 @@ const getAllProducts = async(req, res) => {
     // Default page to 1 and limit to 10
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
-
     const skip = (page - 1) * limit;
 
     try {
@@ -20,25 +19,13 @@ const getAllProducts = async(req, res) => {
             return obj;
         });
 
-        // To give the user some meta data about the pagination
-        const totalProducts = await Product.countDocuments(req.query);
-        const totalPages = Math.ceil(totalProducts / limit);
-        
-        res.status(200).json({
-            products: modifiedProducts,
-            meta: {
-                total: totalProducts,
-                page,
-                totalPages,
-                limit
-            }
-        });
+        // Directly send the modified array of products
+        res.status(200).json(modifiedProducts);
 
     } catch (error) {
         res.status(500).json({msg: "Server Error", error: error.message});
     }
 };
-
 
 const getAllProductsTesting = async(req,res) => {
     res.status(200).json({msg: "I am getAllProductsTesting"});
